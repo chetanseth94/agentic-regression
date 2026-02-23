@@ -86,6 +86,50 @@ cp .env.example .env            # Edit with your config
 uvicorn src.main:app --reload
 ```
 
+## CLI Entry Point (run from JSON)
+
+If you want a **single entry point** without calling the REST API, put your STAF payload into a JSON file and run:
+
+```bash
+python -m src.cli --input run-input.example.json
+```
+
+The input file can be your STAF trigger payload (and may include extra fields). Minimum example:
+
+```json
+{
+  "envType": "OCP-SM",
+  "suite_name": "@BVT_Buy_sol2",
+  "numberOfThreads": "10",
+  "envDetails": "https://vfde-e2e-automation-<env>-runtime.apps.<cluster>.ocpd.corp.amdocs.com",
+  "sslVerify": true,
+  "caBundlePath": "/path/to/corp-ca-bundle.pem"
+}
+```
+
+If you hit `CERTIFICATE_VERIFY_FAILED`, prefer providing a **CA bundle** (`caBundlePath`). As a temporary workaround you can set `"sslVerify": false` for that run.
+
+### CLI output options
+By default, the CLI prints a concise, formatted decision summary.
+
+- Print full JSON:
+
+```bash
+python -m src.cli --input run.json --json
+```
+
+- Include history in JSON:
+
+```bash
+python -m src.cli --input run.json --json --include-history
+```
+
+- Include report_text in JSON:
+
+```bash
+python -m src.cli --input run.json --json --include-report-text
+```
+
 ## API Endpoints
 
 | Method | Path | Description |

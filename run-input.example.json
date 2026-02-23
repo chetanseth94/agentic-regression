@@ -1,0 +1,7 @@
+{
+  "envType": "OCP-SM",
+  "suite_name": "@BVT_Buy_sol2",
+  "numberOfThreads": "10",
+  "envDetails": "https://vfde-e2e-automation-vfde-il04-env27-runtime.apps.ildelocpvfd404.ocpd.corp.amdocs.com"
+}
+

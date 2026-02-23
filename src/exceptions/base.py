@@ -1,10 +1,12 @@
 """Base exception classes."""
 
+from typing import Optional
+
 
 class TriageException(Exception):
     """Base exception for all triage-related errors."""
 
-    def __init__(self, message: str, details: dict | None = None):
+    def __init__(self, message: str, details: Optional[dict] = None):
         super().__init__(message)
         self.message = message
         self.details = details or {}

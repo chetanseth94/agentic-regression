@@ -1,10 +1,8 @@
 """Services package — business logic layer."""
 
-# Main flow orchestration
-# from .orchestrator import Orchestrator
-
-# STAF automation API client
-# from .staf_client import StafClient
+from .orchestrator import Orchestrator
+from .staf_client import StafClient
+from .storage import InMemoryStorage
 
 # Flow failure analysis (AI Agent sub-flow)
 # from .ai_agent import AIAgent
@@ -16,7 +14,4 @@
 # from .mcp_client import MCPClient
 # from .jira_client import JiraClient
 
-# Storage
-# from .storage import MemoryStorage
-
-__all__ = []
+__all__ = ["Orchestrator", "StafClient", "InMemoryStorage"]

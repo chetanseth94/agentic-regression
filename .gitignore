@@ -61,3 +61,6 @@ reports/
 *.html
 *.xml
 *.json
+
+# Allow checked-in example input files
+!run-input.example.json

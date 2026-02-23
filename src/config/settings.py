@@ -19,15 +19,21 @@ class Settings(BaseSettings):
     cors_origins: list[str] = ["*"]
 
     # Automation STAF API
-    automation_api_base_url: str = "http://localhost:8080"
+    automation_api_base_url: str = (
+        "https://vfde-e2e-automation-vfde-in1069-env16-runtime.apps.indelocpbmvfd1069.ocpd.corp.amdocs.com"
+    )
     automation_activate_path: str = "/automation/v1/activateFlowJobStaf"
     automation_status_path: str = "/automation/v1/status"
     automation_report_path: str = "/automation/v1/stafReport"
     automation_api_timeout: int = 300  # seconds
+    automation_ssl_verify: bool = True
+    automation_ca_bundle_path: Optional[str] = None  # path to corporate CA bundle (PEM)
 
     # Status Polling
-    poll_interval_seconds: int = 10
-    poll_max_wait_seconds: int = 3600  # 1 hour max
+    poll_interval_seconds: int = 60
+    poll_max_wait_seconds: int = 1200  # 20 minutes max
+    directory_not_ready_poll_interval_seconds: int = 5
+    directory_not_ready_max_wait_seconds: int = 60  # allow STAF to register the directory
 
     # Anthropic Claude
     anthropic_api_key: Optional[str] = None
