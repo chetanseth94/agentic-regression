@@ -1,0 +1,37 @@
+# Core Framework
+fastapi==0.109.0
+uvicorn[standard]==0.27.0
+pydantic==2.5.3
+pydantic-settings==2.1.0
+
+# AI/LLM
+anthropic==0.18.1
+
+# HTTP Client
+httpx==0.26.0
+requests==2.31.0
+
+# HTML/XML Parsing
+beautifulsoup4==4.12.3
+lxml==5.1.0
+
+# Utilities
+python-dotenv==1.0.0
+python-multipart==0.0.6
+
+# Testing (development)
+pytest==7.4.4
+pytest-asyncio==0.23.3
+pytest-cov==4.1.0
+httpx==0.26.0  # For testing async endpoints
+
+# Code Quality (development)
+black==24.1.1
+ruff==0.1.11
+mypy==1.8.0
+
+# Optional: MCP support (when available)
+# mcp==0.1.0
+
+# Optional: Jira client
+# jira==3.5.2
