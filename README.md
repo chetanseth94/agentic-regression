@@ -82,7 +82,8 @@ python-project/
 python -m venv venv
 venv\Scripts\activate           # Windows
 pip install -r requirements.txt
-cp .env.example .env            # Edit with your config
+mkdir -p local/amdocs
+cp .env.example local/amdocs/.env   # Edit with your config (gitignored)
 uvicorn src.main:app --reload
 ```
 
@@ -101,7 +102,7 @@ The input file can be your STAF trigger payload (and may include extra fields). 
   "envType": "OCP-SM",
   "suite_name": "@BVT_Buy_sol2",
   "numberOfThreads": "10",
-  "envDetails": "https://vfde-e2e-automation-<env>-runtime.apps.<cluster>.ocpd.corp.amdocs.com",
+  "envDetails": "https://vfde-e2e-automation-<env>-runtime.apps.<cluster>.<corp-domain>",
   "sslVerify": true,
   "caBundlePath": "/path/to/corp-ca-bundle.pem"
 }
@@ -149,7 +150,7 @@ python -m src.cli --input run.json --json --include-report-text
 
 ## Key Design Decisions
 
-- **BOTH path**: Intermittent flows are NOT retriggered — only reported alongside actual failures
-- **Only ALL_INTERMITTENT** triggers the retrigger loop
+- **BOTH path**: Intermittent flows are retriggered for confirmation; if they fail again they are treated as ACTUAL
+- **Retrigger**: Intermittent flows are retriggered to validate flakiness before finalizing RCA
 - **Retry loop**: Goes back to Step 2 (full status monitoring) not just fire-and-forget
 - **Polling**: Status monitored via loop until completion

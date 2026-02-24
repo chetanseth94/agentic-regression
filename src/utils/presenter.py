@@ -37,8 +37,51 @@ def format_end_flow_report(run_context: RunContext) -> str:
             lines.append("    - Action: Exit")
         elif suite_status == SuiteStatus.AMBER:
             lines.append(f"    - AMBER: Failures detected (failedTests={status.failed_tests})")
-            lines.append("    - Action: Analysis not implemented yet (Phase 2 pending)")
-            lines.append("    - Report fetched: no")
+            if run_context.parsed_report:
+                lines.append(
+                    f"    - Action: Report parsed (failed={run_context.parsed_report.failed}/"
+                    f"{run_context.parsed_report.total_flows}); ready for analysis"
+                )
+                tags = run_context.parsed_report.failed_flow_tags
+                if tags:
+                    preview = ", ".join(tags[:5])
+                    more = "" if len(tags) <= 5 else f" (+{len(tags)-5} more)"
+                    lines.append(f"    - Failed flows: {preview}{more}")
+                else:
+                    lines.append("    - Failed flows: (none extracted)")
+            else:
+                lines.append("    - Action: Report parsing not available")
+            if run_context.analysis_result:
+                agg = run_context.analysis_result.aggregate
+                lines.append(
+                    "    - Analysis: "
+                    f"{agg.value} (intermittent={run_context.analysis_result.intermittent_count}, "
+                    f"actual={run_context.analysis_result.actual_count})"
+                )
+                if run_context.analysis_result.confirmed_intermittent_flow_tags:
+                    preview = ", ".join(run_context.analysis_result.confirmed_intermittent_flow_tags[:5])
+                    more = (
+                        ""
+                        if len(run_context.analysis_result.confirmed_intermittent_flow_tags) <= 5
+                        else f" (+{len(run_context.analysis_result.confirmed_intermittent_flow_tags)-5} more)"
+                    )
+                    lines.append(f"    - Confirmed intermittent: {preview}{more}")
+                if run_context.analysis_result.refuted_intermittent_flow_tags:
+                    preview = ", ".join(run_context.analysis_result.refuted_intermittent_flow_tags[:5])
+                    more = (
+                        ""
+                        if len(run_context.analysis_result.refuted_intermittent_flow_tags) <= 5
+                        else f" (+{len(run_context.analysis_result.refuted_intermittent_flow_tags)-5} more)"
+                    )
+                    lines.append(f"    - Refuted intermittent (now ACTUAL): {preview}{more}")
+                if agg == AggregateResult.ALL_INTERMITTENT:
+                    lines.append("    - Next: Retrigger intermittent-only failures (Phase 4)")
+                elif agg == AggregateResult.ALL_ACTUAL:
+                    lines.append("    - Next: Raise/route ACTUAL failures with RCA suggestions")
+                else:
+                    lines.append("    - Next: Do not retrigger; handle ACTUAL failures first")
+            else:
+                lines.append("    - Next: AI analysis unavailable (check Anthropic settings)")
         elif suite_status == SuiteStatus.RUNNING:
             lines.append("    - RUNNING: Execution in progress")
             lines.append("    - Action: Continue polling")

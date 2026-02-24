@@ -5,6 +5,7 @@ from datetime import datetime
 from enum import Enum
 from typing import Optional
 
+from .report import HTMLReport
 
 class SuiteStatus(str, Enum):
     """Suite execution status based on monitoring."""
@@ -113,6 +114,8 @@ class AnalysisResult:
 
     aggregate: AggregateResult
     intermittent_flow_tags: list[str] = field(default_factory=list)
+    confirmed_intermittent_flow_tags: list[str] = field(default_factory=list)
+    refuted_intermittent_flow_tags: list[str] = field(default_factory=list)
     actual_failures: list[dict] = field(default_factory=list)
     # Each actual_failure dict contains:
     #   flow_tag, rca, stack_trace, relevant_log_lines, fix_suggestion
@@ -134,11 +137,14 @@ class RunContext:
     directory: Optional[str] = None
     execution_status: Optional[ExecutionStatus] = None
     html_report: Optional[str] = None
+    parsed_report: Optional[HTMLReport] = None
+    report_location: Optional[str] = None
     analysis_result: Optional[AnalysisResult] = None
     outcome: Optional[RunOutcome] = None
     retry_count: int = 0
     max_retries: int = 3
     retrigger_flow_tags: list[str] = field(default_factory=list)
+    retrigger_attempts: list[dict] = field(default_factory=list)
     history: list[dict] = field(default_factory=list)  # Log of each iteration
     started_at: Optional[datetime] = None
     completed_at: Optional[datetime] = None

@@ -50,6 +50,18 @@ class ExecutionRequest(BaseModel):
         description="Path to a CA bundle PEM file to trust for this run.",
     )
 
+    # Phase control (primarily for CLI/local runs)
+    skip_phase1_execution: bool = Field(
+        default=False,
+        alias="skipPhase1Execution",
+        description="If true, skip Phase 1 STAF execution and run Phase 2 parsing using extentReportPath.",
+    )
+    extent_report_path: Optional[str] = Field(
+        default=None,
+        alias="extentReportPath",
+        description="Local filesystem path to an ExtentReport HTML file (used when skipPhase1Execution=true).",
+    )
+
     # STAF activate payload-compatible fields (aliases allow STAF-style naming)
     env_type: str = Field(default="OCP-SM", alias="envType", description="Environment type")
     flows: list[FlowRef] = Field(

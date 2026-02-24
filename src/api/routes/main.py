@@ -12,6 +12,7 @@ from ..schemas import (
 from ...exceptions import OrchestrationError, ServiceUnavailableError, ValidationError
 from ...models.suite import RunOutcome, SuiteInput
 from ...services import InMemoryStorage, Orchestrator, StafClient
+from ...utils.preliminary_report import build_preliminary_report
 
 router = APIRouter()
 
@@ -151,6 +152,24 @@ async def get_run_status(run_id: str):
         retry_count=ctx.retry_count,
         max_retries=ctx.max_retries,
         history=ctx.history,
+        failed_flow_tags=(ctx.parsed_report.failed_flow_tags if ctx.parsed_report else []),
+        preliminary_report=build_preliminary_report(
+            parsed_report=ctx.parsed_report,
+            report_location=ctx.report_location,
+        ),
+        analysis=(
+            None
+            if not ctx.analysis_result
+            else {
+                "aggregate_result": ctx.analysis_result.aggregate.value,
+                "intermittent_count": ctx.analysis_result.intermittent_count,
+                "actual_count": ctx.analysis_result.actual_count,
+                "intermittent_flow_tags": ctx.analysis_result.intermittent_flow_tags,
+                "confirmed_intermittent_flow_tags": ctx.analysis_result.confirmed_intermittent_flow_tags,
+                "refuted_intermittent_flow_tags": ctx.analysis_result.refuted_intermittent_flow_tags,
+                "actual_failures": ctx.analysis_result.actual_failures,
+            }
+        ),
     )
 
 

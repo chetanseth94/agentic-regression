@@ -33,9 +33,9 @@ ENV/
 *.swo
 *~
 
-# Environment variables
-.env
-.env.local
+# Environment variables (keep only .env.example in git)
+.env*
+!.env.example
 
 # Testing
 .pytest_cache/
@@ -61,6 +61,12 @@ reports/
 *.html
 *.xml
 *.json
+
+# Local (Amdocs-specific) files - never commit
+local/
+
+# Common local cert bundles
+*.pem
 
 # Allow checked-in example input files
 !run-input.example.json

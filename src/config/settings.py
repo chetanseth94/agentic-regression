@@ -19,9 +19,8 @@ class Settings(BaseSettings):
     cors_origins: list[str] = ["*"]
 
     # Automation STAF API
-    automation_api_base_url: str = (
-        "https://vfde-e2e-automation-vfde-in1069-env16-runtime.apps.indelocpbmvfd1069.ocpd.corp.amdocs.com"
-    )
+    # Keep default sanitized; set AUTOMATION_API_BASE_URL in your local .env
+    automation_api_base_url: str = "https://<your-staf-runtime-host>"
     automation_activate_path: str = "/automation/v1/activateFlowJobStaf"
     automation_status_path: str = "/automation/v1/status"
     automation_report_path: str = "/automation/v1/stafReport"
@@ -69,7 +68,8 @@ class Settings(BaseSettings):
     cache_ttl_seconds: int = 300
 
     model_config = SettingsConfigDict(
-        env_file=".env",
+        # Support a local, gitignored env file for org-specific configuration.
+        env_file=(".env", "local/amdocs/.env", "local/.env"),
         env_file_encoding="utf-8",
         case_sensitive=False,
         extra="ignore",

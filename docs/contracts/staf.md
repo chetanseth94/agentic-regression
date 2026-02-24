@@ -1,7 +1,7 @@
 ## STAF Automation API Contract (vfde-e2e-automation)
 
 ### Base URL
-- **Runtime base**: `https://vfde-e2e-automation-vfde-in1069-env16-runtime.apps.indelocpbmvfd1069.ocpd.corp.amdocs.com`
+- **Runtime base**: `https://<your-staf-runtime-host>`
 
 ### Authentication / headers
 - **Required**:

@@ -21,6 +21,8 @@ class AnalysisResponse(BaseModel):
     intermittent_count: int = 0
     actual_count: int = 0
     intermittent_flow_tags: list[str] = Field(default_factory=list)
+    confirmed_intermittent_flow_tags: list[str] = Field(default_factory=list)
+    refuted_intermittent_flow_tags: list[str] = Field(default_factory=list)
     actual_failures: list[ActualFailureDetail] = Field(default_factory=list)
 
 
@@ -45,3 +47,9 @@ class EndFlowReport(BaseModel):
 
     # History of iterations
     history: list[dict] = Field(default_factory=list)
+
+    # Phase 2: parsed report summary (no AI yet)
+    failed_flow_tags: list[str] = Field(default_factory=list)
+
+    # Phase 2: preliminary report array (per-flow objects + reportLocation)
+    preliminary_report: list[dict] = Field(default_factory=list)
