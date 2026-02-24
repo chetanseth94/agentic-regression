@@ -1,4 +1,4 @@
-## STAF Automation API Contract (vfde-e2e-automation)
+## Automation API Contract (STAF-compatible)
 
 ### Base URL
 - **Runtime base**: `https://<your-staf-runtime-host>`
@@ -27,9 +27,9 @@
 ### Example request
 ```json
 {
-  "envType": "OCP-SM",
+  "envType": "<ENV_TYPE>",
   "flows": [
-    { "name": "@Lean_Buy_solution2" }
+    { "name": "@<flowTag>" }
   ],
   "numberOfThreads": "10"
 }

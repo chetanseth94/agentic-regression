@@ -1,9 +1,10 @@
-"""Extent Spark BDD HTML report parser (vfde-e2e-automation)."""
+"""Extent Spark BDD HTML report parser."""
 
 from __future__ import annotations
 
 import re
 from datetime import datetime
+from itertools import islice
 from typing import Optional
 
 from bs4 import BeautifulSoup
@@ -18,6 +19,55 @@ _AGENTIC_TAG_RE = re.compile(r"@agentic_analysis_[A-Za-z0-9_\-]+")
 _KEY_RE = re.compile(r"\b[A-Za-z]{2,8}[- ]?\d{2,6}\b")
 _URL_RE = re.compile(r"https?://[^\s'\"<>]+", flags=re.I)
 _ACTUAL_STATUS_CODE_RE = re.compile(r"Actual\s+Status\s+Code\s*:?[\s\xa0]*([1-5]\d{2})", flags=re.I)
+
+
+def _limited_text(
+    el,
+    *,
+    max_chars: int,
+    max_fragments: int,
+) -> str:
+    """
+    Safely extract text from a possibly huge DOM subtree.
+
+    Extent reports can embed massive log blobs inside step nodes; calling `.get_text()`
+    walks the entire subtree and can be extremely slow. `stripped_strings` is a generator,
+    so we can stop early once we have enough signal for summarization.
+    """
+
+    if el is None:
+        return ""
+
+    out: list[str] = []
+    total = 0
+
+    try:
+        it = el.stripped_strings
+    except Exception:
+        # Best-effort fallback; still bounded.
+        try:
+            txt = el.get_text(" ", strip=True)
+        except Exception:
+            return ""
+        return txt[:max_chars]
+
+    for s in islice(it, max_fragments):
+        if not s:
+            continue
+
+        # +1 to account for joining spaces.
+        next_total = total + len(s) + 1
+        if next_total > max_chars:
+            remaining = max_chars - total
+            if remaining > 0:
+                out.append(s[:remaining])
+            out.append("…")
+            break
+
+        out.append(s)
+        total = next_total
+
+    return " ".join(out).strip()
 
 
 def _extract_keys(flow_name: str) -> list[str]:
@@ -134,7 +184,7 @@ class ExtentSparkBddReportParser(BaseReportParser):
                     classes = set(div.get("class") or [])
                     title_el = div.select_one("span")
                     title = title_el.get_text(" ", strip=True) if title_el else ""
-                    div_text = " ".join(div.get_text(" ", strip=True).split())
+                    div_text = _limited_text(div, max_chars=6000, max_fragments=1500)
 
                     summary = _summarize_step(div_text=div_text, title=title) or title or div_text[:300]
                     if not summary:
@@ -150,7 +200,7 @@ class ExtentSparkBddReportParser(BaseReportParser):
             # Fallback: table rows
             if not steps:
                 for row in item.select("tr"):
-                    row_text = " ".join(row.get_text(" ", strip=True).split())
+                    row_text = _limited_text(row, max_chars=3000, max_fragments=500)
                     if not row_text:
                         continue
                     # Extent HTML sometimes nests other scenario logs; keep rows that match this scenario's keys.

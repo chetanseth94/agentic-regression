@@ -83,7 +83,7 @@ python -m venv venv
 venv\Scripts\activate           # Windows
 pip install -r requirements.txt
 mkdir -p local/amdocs
-cp .env.example local/amdocs/.env   # Edit with your config (gitignored)
+cp .env.example local/amdocs/.env   # Edit with your org-specific config (gitignored)
 uvicorn src.main:app --reload
 ```
 
@@ -95,6 +95,14 @@ If you want a **single entry point** without calling the REST API, put your STAF
 python -m src.cli --input run-input.example.json
 ```
 
+Recommended workflow (keeps org-specific values out of git):
+```bash
+mkdir -p local/amdocs
+cp run-input.example.json local/amdocs/run-input.json
+# edit local/amdocs/run-input.json with your real envDetails / report paths
+python -m src.cli --input local/amdocs/run-input.json
+```
+
 The input file can be your STAF trigger payload (and may include extra fields). Minimum example:
 
 ```json
@@ -102,7 +110,7 @@ The input file can be your STAF trigger payload (and may include extra fields). 
   "envType": "OCP-SM",
   "suite_name": "@BVT_Buy_sol2",
   "numberOfThreads": "10",
-  "envDetails": "https://vfde-e2e-automation-<env>-runtime.apps.<cluster>.<corp-domain>",
+  "envDetails": "https://<automation-runtime-host>",
   "sslVerify": true,
   "caBundlePath": "/path/to/corp-ca-bundle.pem"
 }

@@ -1,7 +1,11 @@
 {
-  "envType": "OCP-SM",
-  "suite_name": "@BVT_Buy_sol2",
+  "envType": "<ENV_TYPE>",
+  "suite_name": "@<SUITE_TAG_OR_FLOW_TAG>",
   "numberOfThreads": "10",
-  "envDetails": "https://<your-staf-runtime-host>"
-}
+  "envDetails": "https://<automation-runtime-host>",
+  "sslVerify": true,
+  "caBundlePath": "/path/to/corp-ca-bundle.pem",
 
+  "skipPhase1Execution": true,
+  "extentReportPath": "local/extent-report.html"
+}

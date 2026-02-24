@@ -1,4 +1,4 @@
-"""Client for vfde-e2e-automation STAF APIs."""
+"""Client for STAF-compatible automation APIs."""
 
 from __future__ import annotations
 
